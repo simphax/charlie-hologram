@@ -37,7 +37,20 @@ public class CharlieAnimator : MonoBehaviour {
 			animation.CrossFade ("EndEating");
 		}
 		if (Input.GetKeyDown ("l")) {
-			animation.CrossFade ("Meowing");
+			animation.CrossFade ("Custom");
 		}
+
+	}
+
+	void LateUpdate() {
+		Transform neck = GameObject.Find ("Cat_Neck_01SHJnt").transform;
+		Transform camera = GameObject.Find ("ARCamera").transform;
+
+		Vector3 lookAngle = Quaternion.LookRotation (camera.transform.position).eulerAngles;
+		float lookFactor = 1.0f;
+		lookAngle = new Vector3 (lookAngle.x * lookFactor, lookAngle.y * lookFactor, lookAngle.z * lookFactor);
+		Vector3 neckAngle = new Vector3 (0, 160, 290);
+
+		neck.rotation = Quaternion.Euler(neckAngle + lookAngle);
 	}
 }
