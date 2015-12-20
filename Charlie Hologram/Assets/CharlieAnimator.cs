@@ -11,6 +11,13 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 	CheeseBehaviour cheese;
 	float fatness = 2.0f;
 
+	float timeLostCheese = 0.0f;
+	bool lookingAtCheese = false;
+	Quaternion lastCheeseRotation;
+
+	Quaternion lastCameraRotation;
+	float timeLostCamera = 0.0f;
+
 	// Use this for initialization
 	void Start () {
 		TrackableBehaviour trackableBehaviour = GetComponentInParent<TrackableBehaviour>();
@@ -63,17 +70,43 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 
 	void LateUpdate() {
 		if(idle) {
+			GameObject cheese = GameObject.Find ("Cheese(Clone)");
 			Transform neck = GameObject.Find ("Cat_Neck_01SHJnt").transform;
-			Transform camera = GameObject.Find ("ARCamera").transform;
+			GameObject camera = GameObject.Find ("ARCamera");
+			Vector3 lookAngle = Quaternion.LookRotation(camera.transform.position - neck.transform.position).eulerAngles;
+			lookAngle.x *= -1;
+			lookAngle.x += -60;
 
-			Vector3 lookAngle = Quaternion.LookRotation (camera.transform.position).eulerAngles;
+			if (cheese != null) {
+				CheeseBehaviour cheeseBehaviour = cheese.GetComponent<CheeseBehaviour> ();
+				if (cheeseBehaviour.Tracked) {
+					if (!lookingAtCheese) {
+						timeLostCamera = Time.time;
+						lookingAtCheese = true;
+					}
+					lookAngle = Quaternion.LookRotation (cheese.transform.position - neck.transform.position).eulerAngles;
+					lookAngle.x *= -1;
+					lookAngle.x += -40;
+				} else {
+					if (lookingAtCheese) {
+						lookingAtCheese = false;
+						timeLostCheese = Time.time;
+					}
+				}
+			}
+
 			float lookFactor = 1.0f;
 			lookAngle = new Vector3 (lookAngle.x * lookFactor, lookAngle.y * lookFactor, lookAngle.z * lookFactor);
 			Vector3 neckAngle = new Vector3 (-20, 160, 160+105);
 
-			neck.rotation = Quaternion.Euler(neckAngle + lookAngle);
-
-
+			Quaternion rot = Quaternion.Euler(neckAngle + lookAngle);
+			if (lookingAtCheese) {
+				lastCheeseRotation = rot;
+				neck.rotation = Quaternion.Slerp (lastCameraRotation, rot, (Time.time - timeLostCamera) * 5.0f);
+			} else {
+				lastCameraRotation = rot;
+				neck.rotation = Quaternion.Slerp (lastCheeseRotation, rot, (Time.time - timeLostCheese) * 3.0f);
+			}
 		}
 
 		Transform head1 = GameObject.Find ("Cat_Head_TopSHJnt").transform;
@@ -83,19 +116,21 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 		Transform spine3 = GameObject.Find ("Cat_Spine_03SHJnt").transform;
 
 		spine.localScale = new Vector3 (1.0f, fatness, 1.0f);
-		spine2.localScale = new Vector3 (1.0f, fatness/2.8f, 1.0f);
-		spine3.localScale = new Vector3 (1.0f, fatness/2.8f, 1.0f);
+		spine2.localScale = new Vector3 (1.0f, (float)Math.Sqrt(1.0f / fatness), 1.0f);
+		spine3.localScale = new Vector3 (1.0f, (float)Math.Sqrt(1.0f / fatness), 1.0f);
 		//head2.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
 	}
 
-	public void GiveCheese(CheeseBehaviour cheese) {
+	public bool GiveCheese(CheeseBehaviour cheese) {
 		if (tracked && idle) {
 			Debug.Log ("Charlie has been given cheese!");
 			this.cheese = cheese;
 			animation.CrossFade ("Attack_Seating");
 			StartCoroutine ("TakeCheese");
 			idle = false;
+			return true;
 		}
+		return false;
 	}
 
 	IEnumerator TakeCheese() {
@@ -105,24 +140,22 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 
 		float yDistance = Math.Abs (paw.position.y - cheese.transform.position.y);
 
-		//if (yDistance < 8) {
-		//	Debug.Log ("Y Distance is still < 8");
-			cheese.transform.SetParent (paw);
-			cheese.transform.localPosition = new Vector3 (-0.09f, 0.05f, 0);
-			cheese.transform.localScale = new Vector3 (0.08f, 0.08f, 0.08f);
+		cheese.transform.SetParent (paw);
+		cheese.transform.localPosition = new Vector3 (-0.09f, 0.05f, 0);
+		cheese.transform.localScale = new Vector3 (0.08f, 0.08f, 0.08f);
 
-			yield return new WaitForSeconds(0.6f);
+		yield return new WaitForSeconds(0.6f);
 
-			animation.CrossFade ("Custom Eating");
+		animation.CrossFade ("Custom Eating");
 
-			Transform cat = GameObject.Find ("Cat_Lowpoly").transform;
-			cheese.transform.SetParent (cat);
-			cheese.transform.localPosition = new Vector3 (0f, 0.147f, 1.3f);
+		Transform cat = GameObject.Find ("Cat_Lowpoly").transform;
+		cheese.transform.SetParent (cat);
+		cheese.transform.localPosition = new Vector3 (0f, 0.147f, 1.3f);
 
-			yield return new WaitForSeconds(2.0f);
-			Destroy (cheese.gameObject);
-			idle = true;
-			animation.CrossFade ("Custom");
-		//}
+		yield return new WaitForSeconds(2.0f);
+		Destroy (cheese.gameObject);
+		idle = true;
+		animation.CrossFade ("Custom");
+		fatness += 0.5f;
 	}
 }

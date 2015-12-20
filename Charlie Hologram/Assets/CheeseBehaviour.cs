@@ -6,7 +6,7 @@ using Vuforia;
 public class CheeseBehaviour : MonoBehaviour, ITrackableEventHandler {
 	
 	bool eaten = false;
-	bool tracked = false;
+	public bool Tracked = false;
 
 	// Use this for initialization
 	void Start () {
@@ -16,32 +16,34 @@ public class CheeseBehaviour : MonoBehaviour, ITrackableEventHandler {
 
 	public void OnTrackableStateChanged (TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus) {
 		if (newStatus == TrackableBehaviour.Status.TRACKED) {
-			tracked = true;
+			Tracked = true;
 		} else {
-			tracked = false;
+			Tracked = false;
 		}
 	}
 
 	
 	// Update is called once per frame
 	void Update () {
-		if (tracked) {
+		/*if (tracked) {
 			Transform cat = GameObject.Find ("Cat_SHJntGrp").transform;
-			float distance = Vector3.Distance (cat.position, gameObject.transform.position);
+			Vector3 catPosition = cat.position;
+			catPosition.y += 0.5f;
+			float distance = Vector3.Distance (catPosition, gameObject.transform.position);
 			float zDistance = Math.Abs (cat.position.z - gameObject.transform.position.z);
 			float xDistance = Math.Abs (cat.position.x - gameObject.transform.position.x);
 			float yDistance = Math.Abs (cat.position.y - gameObject.transform.position.y);
-
+			/*
 			Debug.Log (distance);
 			Debug.Log ("X: " + xDistance);
 			Debug.Log ("Y: " + yDistance);
 			Debug.Log ("Z: " + zDistance);
-			if (yDistance < 8 && distance < 25 && !eaten) {
-				eaten = true;
+			*//*
+			if (distance < 27 && !eaten) {
 				Debug.Log ("Cheese will get eaten!");
 				CharlieAnimator charlieAnimator = GameObject.Find ("Cat_Lowpoly").GetComponent<CharlieAnimator>();
-				charlieAnimator.GiveCheese (this);
+				eaten = charlieAnimator.GiveCheese (this);
 			}
-		}
+	 	}*/
 	}
 }
