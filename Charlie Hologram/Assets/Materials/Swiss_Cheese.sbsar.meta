@@ -10,7 +10,7 @@ labels:
 - substance
 - texture
 - seamless
-timeCreated: 1450577457
+timeCreated: 1450634329
 licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
@@ -39,7 +39,7 @@ SubstanceImporter:
         texture: {instanceID: 0}
     - name: $randomseed
       value:
-        scalar[0]: 7725
+        scalar[0]: 5769
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -143,7 +143,7 @@ SubstanceImporter:
             name: _BumpMap
           second:
             texture: {instanceID: 0}
-            scale: {x: 1, y: 100}
+            scale: {x: 1, y: 1}
             offset: {x: 0, y: 0}
         data:
           first:
@@ -157,7 +157,7 @@ SubstanceImporter:
             name: _ParallaxMap
           second:
             texture: {instanceID: 0}
-            scale: {x: 1, y: 100}
+            scale: {x: 1, y: 1}
             offset: {x: 0, y: 0}
         data:
           first:
@@ -192,7 +192,7 @@ SubstanceImporter:
             name: _SpecGlossMap
           second:
             texture: {instanceID: 0}
-            scale: {x: 1, y: 100}
+            scale: {x: 1, y: 1}
             offset: {x: 0, y: 0}
       floats:
         data:
