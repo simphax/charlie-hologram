@@ -10,7 +10,7 @@ labels:
 - substance
 - texture
 - seamless
-timeCreated: 1450575120
+timeCreated: 1450577457
 licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
@@ -19,8 +19,8 @@ SubstanceImporter:
     name: Swiss_Cheese
     prototypeName: Swiss_Cheese
     shader: {fileID: 45, guid: 0000000000000000f000000000000000, type: 0}
-    shaderKeywords: _NORMALMAP _PARALLAXMAP
-    renderQueue: 2000
+    shaderKeywords: _NORMALMAP _PARALLAXMAP _SPECGLOSSMAP
+    renderQueue: -1
     lightmapFlags: 5
     inputs:
     - name: $normalformat
@@ -39,7 +39,7 @@ SubstanceImporter:
         texture: {instanceID: 0}
     - name: $randomseed
       value:
-        scalar[0]: 7707
+        scalar[0]: 7725
         scalar[1]: 0
         scalar[2]: 0
         scalar[3]: 0
@@ -143,7 +143,7 @@ SubstanceImporter:
             name: _BumpMap
           second:
             texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
+            scale: {x: 1, y: 100}
             offset: {x: 0, y: 0}
         data:
           first:
@@ -157,7 +157,7 @@ SubstanceImporter:
             name: _ParallaxMap
           second:
             texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
+            scale: {x: 1, y: 100}
             offset: {x: 0, y: 0}
         data:
           first:
@@ -192,7 +192,7 @@ SubstanceImporter:
             name: _SpecGlossMap
           second:
             texture: {instanceID: 0}
-            scale: {x: 1, y: 1}
+            scale: {x: 1, y: 100}
             offset: {x: 0, y: 0}
       floats:
         data:
