@@ -25,7 +25,7 @@ public class CheeseBehaviour : MonoBehaviour, ITrackableEventHandler {
 	
 	// Update is called once per frame
 	void Update () {
-		/*if (tracked) {
+		if (Tracked) {
 			Transform cat = GameObject.Find ("Cat_SHJntGrp").transform;
 			Vector3 catPosition = cat.position;
 			catPosition.y += 0.5f;
@@ -38,12 +38,12 @@ public class CheeseBehaviour : MonoBehaviour, ITrackableEventHandler {
 			Debug.Log ("X: " + xDistance);
 			Debug.Log ("Y: " + yDistance);
 			Debug.Log ("Z: " + zDistance);
-			*//*
+			*/
 			if (distance < 27 && !eaten) {
 				Debug.Log ("Cheese will get eaten!");
 				CharlieAnimator charlieAnimator = GameObject.Find ("Cat_Lowpoly").GetComponent<CharlieAnimator>();
 				eaten = charlieAnimator.GiveCheese (this);
 			}
-	 	}*/
+	 	}
 	}
 }

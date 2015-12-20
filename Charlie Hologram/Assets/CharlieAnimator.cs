@@ -9,7 +9,7 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 	bool idle = true;
 	bool tracked = false;
 	CheeseBehaviour cheese;
-	float fatness = 2.0f;
+	float fatness = 1.1f;
 
 	float timeLostCheese = 0.0f;
 	bool lookingAtCheese = false;
@@ -97,7 +97,7 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 
 			float lookFactor = 1.0f;
 			lookAngle = new Vector3 (lookAngle.x * lookFactor, lookAngle.y * lookFactor, lookAngle.z * lookFactor);
-			Vector3 neckAngle = new Vector3 (-20, 160, 160+105);
+			Vector3 neckAngle = new Vector3 (-15, 160, 160+115);
 
 			Quaternion rot = Quaternion.Euler(neckAngle + lookAngle);
 			if (lookingAtCheese) {
@@ -115,10 +115,12 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 		Transform spine2 = GameObject.Find ("Cat_Spine_02SHJnt").transform;
 		Transform spine3 = GameObject.Find ("Cat_Spine_03SHJnt").transform;
 
-		spine.localScale = new Vector3 (1.0f, fatness, 1.0f);
-		spine2.localScale = new Vector3 (1.0f, (float)Math.Sqrt(1.0f / fatness), 1.0f);
-		spine3.localScale = new Vector3 (1.0f, (float)Math.Sqrt(1.0f / fatness), 1.0f);
-		//head2.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
+		//spine.localScale = new Vector3 (1.0f, fatness, 1.0f);
+		spine2.localScale = new Vector3 (1.0f, fatness, 1.0f + fatness * 0.2f);
+		spine3.localScale = new Vector3 (1.0f, 1.0f / fatness, 1.0f / ( 1.0f + fatness * 0.2f));
+		head1.localScale = new Vector3 (1.0f, 1.0f, 0.6f);
+		head2.localScale = new Vector3 (1.0f, 1.0f, 0.6f);
+		head2.localRotation = Quaternion.Euler(new Vector3 (head2.localRotation.eulerAngles.x, head2.localRotation.eulerAngles.y-10f, head2.localRotation.eulerAngles.z));
 	}
 
 	public bool GiveCheese(CheeseBehaviour cheese) {
@@ -144,18 +146,20 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 		cheese.transform.localPosition = new Vector3 (-0.09f, 0.05f, 0);
 		cheese.transform.localScale = new Vector3 (0.08f, 0.08f, 0.08f);
 
-		yield return new WaitForSeconds(0.6f);
+		yield return new WaitForSeconds(0.7f);
 
 		animation.CrossFade ("Custom Eating");
 
 		Transform cat = GameObject.Find ("Cat_Lowpoly").transform;
 		cheese.transform.SetParent (cat);
-		cheese.transform.localPosition = new Vector3 (0f, 0.147f, 1.3f);
+		cheese.transform.localPosition = new Vector3 (0.05f, 0.147f, 0.9f);
+		cheese.transform.localScale = new Vector3 (0.08f, 0.08f, 0.08f);
 
 		yield return new WaitForSeconds(2.0f);
 		Destroy (cheese.gameObject);
 		idle = true;
 		animation.CrossFade ("Custom");
-		fatness += 0.5f;
+		fatness += 0.05f;
+
 	}
 }
