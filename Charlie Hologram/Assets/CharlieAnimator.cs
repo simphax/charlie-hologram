@@ -127,7 +127,12 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 		spine3.localScale = new Vector3 (1.0f, 1.0f / fatness, 1.0f / ( 1.0f + fatness * 0.2f));
 		head1.localScale = new Vector3 (1.0f, 1.0f, 0.6f);
 		head2.localScale = new Vector3 (1.0f, 1.0f, 0.6f);
-		head2.localRotation = Quaternion.Euler(new Vector3 (head2.localRotation.eulerAngles.x, head2.localRotation.eulerAngles.y-10f, head2.localRotation.eulerAngles.z));
+		Vector3 head2Pos = head2.localPosition;
+		head2Pos.x -= 0.015f;
+		head2Pos.z -= 0.04f;
+		head2.localPosition = head2Pos;
+		head2.localRotation = Quaternion.Euler(new Vector3 (head2.localRotation.eulerAngles.x, head2.localRotation.eulerAngles.y-30f, head2.localRotation.eulerAngles.z));
+
 	}
 
 	public bool GiveCheese(CheeseBehaviour cheese) {
