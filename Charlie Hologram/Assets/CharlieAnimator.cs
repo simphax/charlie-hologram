@@ -70,7 +70,7 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 
 		if (cheese != null && cheeseEatingAnimation) {
 			Vector3 cheesePosition = cheese.transform.localPosition;
-			cheesePosition.y += Time.deltaTime * 0.2f;
+			cheesePosition.y += Time.deltaTime * 0.19f;
 			cheese.transform.localPosition = cheesePosition;
 		}
 	}
