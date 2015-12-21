@@ -28,7 +28,7 @@ public class CheeseBehaviour : MonoBehaviour, ITrackableEventHandler {
 		if (Tracked) {
 			Transform cat = GameObject.Find ("Cat_SHJntGrp").transform;
 			Vector3 catPosition = cat.position;
-			catPosition.y += 0.5f;
+			catPosition.y += 0.7f;
 			float distance = Vector3.Distance (catPosition, gameObject.transform.position);
 			float zDistance = Math.Abs (cat.position.z - gameObject.transform.position.z);
 			float xDistance = Math.Abs (cat.position.x - gameObject.transform.position.x);

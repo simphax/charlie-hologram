@@ -18,6 +18,8 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 	Quaternion lastCameraRotation;
 	float timeLostCamera = 0.0f;
 
+	bool cheeseEatingAnimation = false;
+
 	// Use this for initialization
 	void Start () {
 		TrackableBehaviour trackableBehaviour = GetComponentInParent<TrackableBehaviour>();
@@ -66,6 +68,11 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 			animation.CrossFade ("Custom");
 		}
 
+		if (cheese != null && cheeseEatingAnimation) {
+			Vector3 cheesePosition = cheese.transform.localPosition;
+			cheesePosition.y += Time.deltaTime * 0.2f;
+			cheese.transform.localPosition = cheesePosition;
+		}
 	}
 
 	void LateUpdate() {
@@ -140,8 +147,6 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 
 		Transform paw = GameObject.Find ("Cat_r_FrontLeg_BallSHJnt").transform;
 
-		float yDistance = Math.Abs (paw.position.y - cheese.transform.position.y);
-
 		cheese.transform.SetParent (paw);
 		cheese.transform.localPosition = new Vector3 (-0.09f, 0.05f, 0);
 		cheese.transform.localScale = new Vector3 (0.08f, 0.08f, 0.08f);
@@ -150,16 +155,28 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 
 		animation.CrossFade ("Custom Eating");
 
+		yield return new WaitForSeconds(0.1f);
+
+
 		Transform cat = GameObject.Find ("Cat_Lowpoly").transform;
 		cheese.transform.SetParent (cat);
-		cheese.transform.localPosition = new Vector3 (0.05f, 0.147f, 0.9f);
+		cheese.transform.localPosition = new Vector3 (0.05f, 0.10f, 0.9f);
 		cheese.transform.localScale = new Vector3 (0.08f, 0.08f, 0.08f);
+		cheese.transform.localRotation = Quaternion.identity;
 
-		yield return new WaitForSeconds(2.0f);
+		yield return new WaitForSeconds(0.3f);
+		Transform jaw = GameObject.Find ("Cat_Head_JawSHJnt").transform;
+		cheese.transform.SetParent (jaw);
+		cheese.transform.localPosition = new Vector3 (0f, -0.2f, 0.2f);
+		cheese.transform.localScale = new Vector3 (0.08f, 0.08f, 0.08f);
+		cheese.transform.localRotation = Quaternion.identity;
+		cheeseEatingAnimation = true;
+
+		yield return new WaitForSeconds(1.9f);
 		Destroy (cheese.gameObject);
 		idle = true;
 		animation.CrossFade ("Custom");
 		fatness += 0.05f;
-
+		cheeseEatingAnimation = false;
 	}
 }
