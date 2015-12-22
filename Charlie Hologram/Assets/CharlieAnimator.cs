@@ -7,6 +7,7 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 
 	Animation animation;
 	bool idle = true;
+	bool eatingCheese = false;
 	bool tracked = false;
 	CheeseBehaviour cheese;
 	float fatness = 1.1f;
@@ -17,6 +18,9 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 
 	Quaternion lastCameraRotation;
 	float timeLostCamera = 0.0f;
+
+	Quaternion lastIdleRotation;
+	float timeLostIdle = 0.0f;
 
 	bool cheeseEatingAnimation = false;
 
@@ -29,7 +33,7 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 	}
 
 	public void OnTrackableStateChanged (TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus) {
-		if (newStatus == TrackableBehaviour.Status.TRACKED) {
+		if (newStatus == TrackableBehaviour.Status.TRACKED || newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED) {
 			tracked = true;
 		} else {
 			tracked = false;
@@ -76,11 +80,11 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 	}
 
 	void LateUpdate() {
-		if(idle) {
+		if (idle) {
 			GameObject cheese = GameObject.Find ("Cheese(Clone)");
 			Transform neck = GameObject.Find ("Cat_Neck_01SHJnt").transform;
 			GameObject camera = GameObject.Find ("ARCamera");
-			Vector3 lookAngle = Quaternion.LookRotation(camera.transform.position - neck.transform.position).eulerAngles;
+			Vector3 lookAngle = Quaternion.LookRotation (camera.transform.position - neck.transform.position).eulerAngles;
 			lookAngle.x *= -1;
 			lookAngle.x += -60;
 
@@ -104,9 +108,9 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 
 			float lookFactor = 1.0f;
 			lookAngle = new Vector3 (lookAngle.x * lookFactor, lookAngle.y * lookFactor, lookAngle.z * lookFactor);
-			Vector3 neckAngle = new Vector3 (-15, 160, 160+115);
+			Vector3 neckAngle = new Vector3 (-15, 160, 160 + 115);
 
-			Quaternion rot = Quaternion.Euler(neckAngle + lookAngle);
+			Quaternion rot = Quaternion.Euler (neckAngle + lookAngle);
 			if (lookingAtCheese) {
 				lastCheeseRotation = rot;
 				neck.rotation = Quaternion.Slerp (lastCameraRotation, rot, (Time.time - timeLostCamera) * 5.0f);
@@ -114,6 +118,9 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 				lastCameraRotation = rot;
 				neck.rotation = Quaternion.Slerp (lastCheeseRotation, rot, (Time.time - timeLostCheese) * 3.0f);
 			}
+		} else {
+			Transform neck = GameObject.Find ("Cat_Neck_01SHJnt").transform;
+			neck.rotation = Quaternion.Slerp (lastIdleRotation, neck.rotation, (Time.time - timeLostIdle) * 2.0f);
 		}
 
 		Transform head1 = GameObject.Find ("Cat_Head_TopSHJnt").transform;
@@ -136,12 +143,12 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 	}
 
 	public bool GiveCheese(CheeseBehaviour cheese) {
-		if (tracked && idle) {
+		if (tracked && idle && !eatingCheese) {
 			Debug.Log ("Charlie has been given cheese!");
 			this.cheese = cheese;
 			animation.CrossFade ("Attack_Seating");
 			StartCoroutine ("TakeCheese");
-			idle = false;
+			eatingCheese = true;
 			return true;
 		}
 		return false;
@@ -149,6 +156,11 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 
 	IEnumerator TakeCheese() {
 		yield return new WaitForSeconds(0.2f);
+
+		idle = false; // Stop looking at the cheese
+		Transform neck = GameObject.Find ("Cat_Neck_01SHJnt").transform;
+		timeLostIdle = Time.time;
+		lastIdleRotation = neck.rotation;
 
 		Transform paw = GameObject.Find ("Cat_r_FrontLeg_BallSHJnt").transform;
 
@@ -179,9 +191,15 @@ public class CharlieAnimator : MonoBehaviour, ITrackableEventHandler {
 
 		yield return new WaitForSeconds(1.9f);
 		Destroy (cheese.gameObject);
-		idle = true;
 		animation.CrossFade ("Custom");
 		fatness += 0.05f;
 		cheeseEatingAnimation = false;
+
+		timeLostCamera = Time.time;
+		timeLostCheese = Time.time;
+		lastCameraRotation = neck.rotation;
+		lastCheeseRotation = neck.rotation;
+		idle = true;
+		eatingCheese = false;
 	}
 }

@@ -28,18 +28,18 @@ public class CheeseBehaviour : MonoBehaviour, ITrackableEventHandler {
 		if (Tracked) {
 			Transform cat = GameObject.Find ("Cat_SHJntGrp").transform;
 			Vector3 catPosition = cat.position;
-			catPosition.y += 0.7f;
+			catPosition.y += 10f;
 			float distance = Vector3.Distance (catPosition, gameObject.transform.position);
-			float zDistance = Math.Abs (cat.position.z - gameObject.transform.position.z);
-			float xDistance = Math.Abs (cat.position.x - gameObject.transform.position.x);
-			float yDistance = Math.Abs (cat.position.y - gameObject.transform.position.y);
-			/*
-			Debug.Log (distance);
-			Debug.Log ("X: " + xDistance);
-			Debug.Log ("Y: " + yDistance);
-			Debug.Log ("Z: " + zDistance);
+			float zDelta = Math.Abs (cat.position.z - gameObject.transform.position.z);
+			float xDelta = Math.Abs (cat.position.x - gameObject.transform.position.x);
+			float yDelta = Math.Abs (cat.position.y - gameObject.transform.position.y);
+
+			//Debug.Log (distance);
+			/*Debug.Log ("X: " + xDelta);
+			Debug.Log ("Y: " + yDelta);
+			Debug.Log ("Z: " + zDelta);
 			*/
-			if (distance < 27 && !eaten) {
+			if (distance < 30 && xDelta < 10 && !eaten) {
 				Debug.Log ("Cheese will get eaten!");
 				CharlieAnimator charlieAnimator = GameObject.Find ("Cat_Lowpoly").GetComponent<CharlieAnimator>();
 				eaten = charlieAnimator.GiveCheese (this);

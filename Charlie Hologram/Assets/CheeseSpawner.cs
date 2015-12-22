@@ -37,7 +37,11 @@ public class CheeseSpawner : MonoBehaviour, ITrackableEventHandler {
 				newCheese.localRotation = Quaternion.identity;
 
 				Renderer cheeseRenderer = newCheese.GetComponent<Renderer> ();
-				cheeseRenderer.material.SetInt ("Random Seed", (int)UnityEngine.Random.Range (0, 10000));
+				int randomSeed = UnityEngine.Random.Range (0, 10000);
+				//Debug.Log ("Setting seed to: " + randomSeed);
+				ProceduralMaterial material = cheeseRenderer.material as ProceduralMaterial;
+				material.SetProceduralFloat ("$randomseed", randomSeed);
+				material.RebuildTextures ();
 				cheeseRenderer.enabled = false;
 			} else {
 				spawnTime = Time.time;
